@@ -1,5 +1,4 @@
 ﻿#include "pipecsfunctions.h"
-#include "menufilter.h"
 #include "logcheckshow.h"
 #include <iostream>
 using namespace std;
@@ -44,10 +43,10 @@ int main() {
             system.deleteCS();
             break;
         case 8:
-            searchPipesMenu(system);
+            system.searchPipesMenu();
             break;
         case 9:
-            searchCSMenu(system);
+            system.searchCSMenu();
             break;
         case 10: {
             string name;

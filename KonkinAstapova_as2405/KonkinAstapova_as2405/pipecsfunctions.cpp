@@ -1,5 +1,6 @@
 #include "pipecsfunctions.h"
 #include "logcheckshow.h"
+#include <iostream>
 #include <fstream>
 #include <algorithm>
 using namespace std;
@@ -153,6 +154,17 @@ void PipelineSystem::batchEditPipes(const vector<int>& pipeIds) {
     cout << "Batch editing completed!\n\n";
 }
 
+void PipelineSystem::batchEditMenu() {
+    cout << "Batch edit pipes - first search for pipes:\n";
+    searchPipesMenu();
+
+    string name;
+    cout << "Enter pipe name for batch editing: ";
+    getline(cin >> ws, name);
+    vector<int> results = findPipesByName(name);
+    batchEditPipes(results);
+}
+
 void PipelineSystem::deletePipe() {
     int id;
     cout << "Enter pipe ID to delete: ";
@@ -244,4 +256,85 @@ void PipelineSystem::loadFromFile(const string& filename) {
     else {
         cout << "Error opening file for reading.\n\n";
     }
+
 }
+void PipelineSystem::searchPipesMenu() {
+    cout << "Search pipes:\n";
+    cout << "1. By name\n";
+    cout << "2. By repair status\n";
+    cout << "Choice: ";
+
+    int choice;
+    cin >> choice;
+
+    vector<int> results;
+    if (choice == 1) {
+        string name;
+        cout << "Enter name to search: ";
+        getline(cin >> ws, name);
+        results = findPipesByName(name);
+    }
+    else if (choice == 2) {
+        int status;
+        cout << "Enter status (0 - in repair, 1 - working): ";
+        cin >> status;
+        results = findPipesByFixing(status == 1);
+    }
+    else {
+        cout << "Invalid choice.\n";
+        return;
+    }
+
+    if (results.empty()) {
+        cout << "No pipes found.\n\n";
+    }
+    else {
+        cout << "Found " << results.size() << " pipes:\n";
+        for (int id : results) {
+            cout << "Pipe ID: " << id << endl;
+        }
+        cout << endl;
+    }
+}
+
+void PipelineSystem::searchCSMenu() {
+    cout << "Search compressor stations:\n";
+    cout << "1. By name\n";
+    cout << "2. By unused workshops percentage\n";
+    cout << "Choice: ";
+
+    int choice;
+    cin >> choice;
+
+    vector<int> results;
+    if (choice == 1) {
+        string name;
+        cout << "Enter name to search: ";
+        getline(cin >> ws, name);
+        results = findCSByName(name);
+    }
+    else if (choice == 2) {
+        float minPercent, maxPercent;
+        cout << "Enter minimum unused percentage: ";
+        cin >> minPercent;
+        cout << "Enter maximum unused percentage: ";
+        cin >> maxPercent;
+        results = findCSByUnusedPercentage(minPercent, maxPercent);
+    }
+    else {
+        cout << "Invalid choice.\n";
+        return;
+    }
+
+    if (results.empty()) {
+        cout << "No compressor stations found.\n\n";
+    }
+    else {
+        cout << "Found " << results.size() << " compressor stations:\n";
+        for (int id : results) {
+            cout << "CS ID: " << id << endl;
+        }
+        cout << endl;
+    }
+}
+

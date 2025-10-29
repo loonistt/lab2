@@ -13,6 +13,8 @@ private:
     int nextPipeId = 1;
     int nextCsId = 1;
 
+    
+
 public:
     void addPipe();
     void addCS();
@@ -26,8 +28,11 @@ public:
     vector<int> findCSByUnusedPercentage(float minPercent, float maxPercent);
 
     void batchEditPipes(const vector<int>& pipeIds);
+    void batchEditMenu();
     void deletePipe();
     void deleteCS();
+    void searchPipesMenu();
+    void searchCSMenu();
     void saveToFile(const string& filename);
     void loadFromFile(const string& filename);
 };

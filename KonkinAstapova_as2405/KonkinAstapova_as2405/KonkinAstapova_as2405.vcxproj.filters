@@ -27,9 +27,6 @@
     <ClCompile Include="logcheckshow.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="menufilter.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
     <ClCompile Include="pipecsfunctions.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="pipecsfunctions.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="menufilter.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
