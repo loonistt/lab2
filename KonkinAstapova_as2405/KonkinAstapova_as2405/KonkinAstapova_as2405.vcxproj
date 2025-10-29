@@ -124,7 +124,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cs.cpp" />
     <ClCompile Include="KonkinAstapova_as2405.cpp" />
+    <ClCompile Include="logcheckshow.cpp" />
+    <ClCompile Include="menufilter.cpp" />
+    <ClCompile Include="pipe.cpp" />
+    <ClCompile Include="pipecsfunctions.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cs.h" />
+    <ClInclude Include="logcheckshow.h" />
+    <ClInclude Include="menufilter.h" />
+    <ClInclude Include="pipe.h" />
+    <ClInclude Include="pipecsfunctions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
