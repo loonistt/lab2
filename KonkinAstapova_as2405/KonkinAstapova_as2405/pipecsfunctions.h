@@ -1,19 +1,20 @@
 #pragma once
 #include "pipe.h"
 #include "cs.h"
-#include <unordered_map>
 #include <vector>
 #include <string>
+#include <algorithm>
 using namespace std;
 
 class PipelineSystem {
 private:
-    unordered_map<int, Pipe> pipes;
-    unordered_map<int, CS> stations;
+    vector<Pipe> pipes;
+    vector<CS> stations;
     int nextPipeId = 1;
     int nextCsId = 1;
 
-    
+    Pipe* findPipeById(int id);
+    CS* findCSById(int id); 
 
 public:
     void addPipe();
@@ -28,7 +29,6 @@ public:
     vector<int> findCSByUnusedPercentage(float minPercent, float maxPercent);
 
     void batchEditPipes(const vector<int>& pipeIds);
-    void batchEditMenu();
     void deletePipe();
     void deleteCS();
     void searchPipesMenu();
