@@ -1,6 +1,7 @@
 #pragma once
 #include "pipe.h"
 #include "cs.h"
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -8,8 +9,8 @@ using namespace std;
 
 class PipelineSystem {
 private:
-    vector<Pipe> pipes;
-    vector<CS> stations;
+    unordered_map<int, Pipe> pipes;
+    unordered_map<int, CS> stations;
     int nextPipeId = 1;
     int nextCsId = 1;
 

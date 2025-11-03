@@ -11,3 +11,5 @@ Deleted pipe with ID: 2
 Added pipe with ID: 1
 Batch edited pipe with ID: 1
 Edited pipe with ID: 1
+Loaded data from file: data.txt
+Added CS with ID: 2

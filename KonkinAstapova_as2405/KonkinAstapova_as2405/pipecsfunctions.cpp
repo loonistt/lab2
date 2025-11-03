@@ -5,28 +5,10 @@
 #include <algorithm>
 using namespace std;
 
-Pipe* PipelineSystem::findPipeById(int id) {
-    for (auto& pipe : pipes) {
-        if (pipe.id == id) {
-            return &pipe;
-        }
-    }
-    return nullptr;
-}
-
-CS* PipelineSystem::findCSById(int id) {
-    for (auto& cs : stations) {
-        if (cs.id == id) {
-            return &cs;
-        }
-    }
-    return nullptr;
-}
-
 void PipelineSystem::addPipe() {
     Pipe pipe(nextPipeId++);
     addPipeData(pipe);
-    pipes.push_back(pipe);
+    pipes[pipe.id] = pipe;
     cout << "New pipe added successfully! ID: " << pipe.id << "\n\n";
     logAction("Added pipe with ID: " + to_string(pipe.id));
 }
@@ -34,7 +16,7 @@ void PipelineSystem::addPipe() {
 void PipelineSystem::addCS() {
     CS cs(nextCsId++);
     addCsData(cs);
-    stations.push_back(cs);
+    stations[cs.id] = cs;
     cout << "New compressor station added successfully! ID: " << cs.id << "\n\n";
     logAction("Added CS with ID: " + to_string(cs.id));
 }
@@ -44,8 +26,8 @@ void PipelineSystem::viewAllObjects() {
         cout << "No pipes available.\n\n";
     }
     else {
-        for (const auto& pipe : pipes) {
-            cout << pipe;
+        for (const auto& pipe_pair : pipes) {
+            cout << pipe_pair.second;
         }
     }
 
@@ -53,8 +35,8 @@ void PipelineSystem::viewAllObjects() {
         cout << "No compressor stations available.\n\n";
     }
     else {
-        for (const auto& cs : stations) {
-            cout << cs;
+        for (const auto& cs_pair : stations) {
+            cout << cs_pair.second;
         }
     }
 }
@@ -64,9 +46,8 @@ void PipelineSystem::editPipe() {
     cout << "Enter pipe ID to edit: ";
     cin >> id;
 
-    Pipe* pipe = findPipeById(id);
-    if (pipe) {
-        editPipeData(*pipe);
+    if (pipes.count(id)) {
+        editPipeData(pipes[id]);
         cout << "Pipe edited successfully!\n\n";
         logAction("Edited pipe with ID: " + to_string(id));
     }
@@ -80,9 +61,8 @@ void PipelineSystem::editCS() {
     cout << "Enter compressor station ID to edit: ";
     cin >> id;
 
-    CS* cs = findCSById(id);
-    if (cs) {
-        editCsData(*cs);
+    if (stations.count(id)) {
+        editCsData(stations[id]);
         cout << "Compressor station edited successfully!\n\n";
         logAction("Edited CS with ID: " + to_string(id));
     }
@@ -93,9 +73,9 @@ void PipelineSystem::editCS() {
 
 vector<int> PipelineSystem::findPipesByName(const string& name) {
     vector<int> result;
-    for (const auto& pipe : pipes) {
-        if (pipe.name.find(name) != string::npos) {
-            result.push_back(pipe.id);
+    for (const auto& pipe_pair : pipes) {
+        if (pipe_pair.second.name.find(name) != string::npos) {
+            result.push_back(pipe_pair.first);
         }
     }
     return result;
@@ -103,9 +83,9 @@ vector<int> PipelineSystem::findPipesByName(const string& name) {
 
 vector<int> PipelineSystem::findPipesByFixing(bool fixing) {
     vector<int> result;
-    for (const auto& pipe : pipes) {
-        if (pipe.fixing == fixing) {
-            result.push_back(pipe.id);
+    for (const auto& pipe_pair : pipes) {
+        if (pipe_pair.second.fixing == fixing) {
+            result.push_back(pipe_pair.first);
         }
     }
     return result;
@@ -113,9 +93,9 @@ vector<int> PipelineSystem::findPipesByFixing(bool fixing) {
 
 vector<int> PipelineSystem::findCSByName(const string& name) {
     vector<int> result;
-    for (const auto& cs : stations) {
-        if (cs.name.find(name) != string::npos) {
-            result.push_back(cs.id);
+    for (const auto& cs_pair : stations) {
+        if (cs_pair.second.name.find(name) != string::npos) {
+            result.push_back(cs_pair.first);
         }
     }
     return result;
@@ -123,10 +103,11 @@ vector<int> PipelineSystem::findCSByName(const string& name) {
 
 vector<int> PipelineSystem::findCSByUnusedPercentage(float minPercent, float maxPercent) {
     vector<int> result;
-    for (const auto& cs : stations) {
+    for (const auto& cs_pair : stations) {
+        const CS& cs = cs_pair.second;
         float unusedPercent = ((cs.workshop - cs.ActiveWorkshop) * 100.0f) / cs.workshop;
         if (unusedPercent >= minPercent && unusedPercent <= maxPercent) {
-            result.push_back(cs.id);
+            result.push_back(cs_pair.first);
         }
     }
     return result;
@@ -140,9 +121,8 @@ void PipelineSystem::batchEditPipes(const vector<int>& pipeIds) {
 
     cout << "Selected pipes for batch editing:\n";
     for (int id : pipeIds) {
-        Pipe* pipe = findPipeById(id);
-        if (pipe) {
-            cout << "ID: " << id << " - " << pipe->name << endl;
+        if (pipes.count(id)) {
+            cout << "ID: " << id << " - " << pipes[id].name << endl;
         }
     }
 
@@ -168,9 +148,8 @@ void PipelineSystem::batchEditPipes(const vector<int>& pipeIds) {
     }
 
     for (int id : pipesToEdit) {
-        Pipe* pipe = findPipeById(id);
-        if (pipe) {
-            editPipeData(*pipe);
+        if (pipes.count(id)) {
+            editPipeData(pipes[id]);
             logAction("Batch edited pipe with ID: " + to_string(id));
         }
     }
@@ -182,11 +161,7 @@ void PipelineSystem::deletePipe() {
     cout << "Enter pipe ID to delete: ";
     cin >> id;
 
-    auto it = remove_if(pipes.begin(), pipes.end(),
-        [id](const Pipe& pipe) { return pipe.id == id; });
-
-    if (it != pipes.end()) {
-        pipes.erase(it, pipes.end());
+    if (pipes.erase(id)) {
         cout << "Pipe deleted successfully!\n\n";
         logAction("Deleted pipe with ID: " + to_string(id));
     }
@@ -200,11 +175,7 @@ void PipelineSystem::deleteCS() {
     cout << "Enter compressor station ID to delete: ";
     cin >> id;
 
-    auto it = remove_if(stations.begin(), stations.end(),
-        [id](const CS& cs) { return cs.id == id; });
-
-    if (it != stations.end()) {
-        stations.erase(it, stations.end());
+    if (stations.erase(id)) {
         cout << "Compressor station deleted successfully!\n\n";
         logAction("Deleted CS with ID: " + to_string(id));
     }
@@ -217,13 +188,15 @@ void PipelineSystem::saveToFile(const string& filename) {
     ofstream file(filename);
     if (file.is_open()) {
         file << pipes.size() << "\n";
-        for (const auto& pipe : pipes) {
+        for (const auto& pipe_pair : pipes) {
+            const Pipe& pipe = pipe_pair.second;
             file << pipe.id << "\n" << pipe.name << "\n" << pipe.length << "\n"
                 << pipe.diameter << "\n" << pipe.fixing << "\n";
         }
 
         file << stations.size() << "\n";
-        for (const auto& cs : stations) {
+        for (const auto& cs_pair : stations) {
+            const CS& cs = cs_pair.second;
             file << cs.id << "\n" << cs.name << "\n" << cs.workshop << "\n"
                 << cs.ActiveWorkshop << "\n" << cs.score << "\n";
         }
@@ -251,7 +224,7 @@ void PipelineSystem::loadFromFile(const string& filename) {
             Pipe pipe(id);
             getline(file >> ws, pipe.name);
             file >> pipe.length >> pipe.diameter >> pipe.fixing;
-            pipes.push_back(pipe);
+            pipes[id] = pipe;
             nextPipeId = max(nextPipeId, id + 1);
         }
 
@@ -263,7 +236,7 @@ void PipelineSystem::loadFromFile(const string& filename) {
             CS cs(id);
             getline(file >> ws, cs.name);
             file >> cs.workshop >> cs.ActiveWorkshop >> cs.score;
-            stations.push_back(cs);
+            stations[id] = cs;
             nextCsId = max(nextCsId, id + 1);
         }
 
