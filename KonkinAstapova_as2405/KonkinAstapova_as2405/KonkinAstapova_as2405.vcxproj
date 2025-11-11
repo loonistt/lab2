@@ -126,13 +126,15 @@
   <ItemGroup>
     <ClCompile Include="cs.cpp" />
     <ClCompile Include="KonkinAstapova_as2405.cpp" />
-    <ClCompile Include="logcheckshow.cpp" />
+    <ClCompile Include="checkshow.cpp" />
+    <ClCompile Include="logger.cpp" />
     <ClCompile Include="pipe.cpp" />
     <ClCompile Include="pipecsfunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cs.h" />
-    <ClInclude Include="logcheckshow.h" />
+    <ClInclude Include="checkshow.h" />
+    <ClInclude Include="logger.h" />
     <ClInclude Include="pipe.h" />
     <ClInclude Include="pipecsfunctions.h" />
   </ItemGroup>

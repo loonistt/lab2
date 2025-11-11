@@ -3,7 +3,6 @@
 #include <string>
 using namespace std;
 
-void logAction(const string& action);
 inline bool checkCinError();
 void showMenu();
 

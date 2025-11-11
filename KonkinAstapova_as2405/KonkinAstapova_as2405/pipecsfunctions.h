@@ -1,7 +1,9 @@
 #pragma once
 #include "pipe.h"
 #include "cs.h"
+#include "logger.h"
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -13,27 +15,37 @@ private:
     unordered_map<int, CS> stations;
     int nextPipeId = 1;
     int nextCsId = 1;
+    ActionLogger logger;
 
-    Pipe* findPipeById(int id);
-    CS* findCSById(int id); 
+    void loadFromFileForReplay(const string& filename);
+    void viewAllObjectsForReplay();
 
 public:
+    void logMenuAction(const string& action) {
+        logger.logMenuAction(action);
+    }
+
     void addPipe();
     void addCS();
     void viewAllObjects();
     void editPipe();
     void editCS();
-
-    vector<int> findPipesByName(const string& name);
-    vector<int> findPipesByFixing(bool fixing);
-    vector<int> findCSByName(const string& name);
-    vector<int> findCSByUnusedPercentage(float minPercent, float maxPercent);
-
-    void batchEditPipes(const vector<int>& pipeIds);
     void deletePipe();
     void deleteCS();
+
     void searchPipesMenu();
     void searchCSMenu();
+    unordered_set<int> findPipesByName(const string& name);
+    unordered_set<int> findPipesByFixing(bool fixing);
+    unordered_set<int> findCSByName(const string& name);
+    unordered_set<int> findCSByUnusedPercentage(float minPercent, float maxPercent);
+
+    void batchEditPipes(const unordered_set<int>& pipeIds);
+
     void saveToFile(const string& filename);
     void loadFromFile(const string& filename);
+
+    void replayFromFile(const string& filename);
+
+    void clearAllData();
 };
