@@ -54,19 +54,6 @@ void ActionLogger::logDeleteCS(int id) {
     }
 }
 
-void ActionLogger::logBatchEdit(const unordered_set<int>& pipeIds, bool newStatus) {
-    if (logFile.is_open()) {
-        logFile << "# Batch edit started for " << pipeIds.size() << " pipes (new status: "
-            << (newStatus ? "working" : "repair") << ")" << endl;
-
-        for (int id : pipeIds) {
-            logFile << "EDIT_PIPE " << id << " " << newStatus << endl;
-        }
-
-        logFile << "# Batch edit completed" << endl;
-    }
-}
-
 void ActionLogger::logBatchEdit(const unordered_map<int, bool>& pipeStatuses) {
     if (logFile.is_open()) {
         logFile << "Batch edit started for " << pipeStatuses.size() << " pipes with individual statuses" << endl;
@@ -124,12 +111,6 @@ void ActionLogger::logSearchCSByUnusedPercentage(float minPercent, float maxPerc
 void ActionLogger::logReplayFromFile(const string& filename) {
     if (logFile.is_open()) {
         logFile << "REPLAY_FROM_FILE \"" << filename << "\"" << endl;
-    }
-}
-
-void ActionLogger::logMessage(const string& message) {
-    if (logFile.is_open()) {
-        logFile << message << endl;
     }
 }
 

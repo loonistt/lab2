@@ -55,7 +55,6 @@ void PipelineSystem::editPipe() {
     cin >> id;
 
     if (pipes.count(id)) {
-        bool oldStatus = pipes[id].getFixing();
         editPipeData(pipes[id]);
         bool newStatus = pipes[id].getFixing();
 
@@ -73,7 +72,6 @@ void PipelineSystem::editCS() {
     cin >> id;
 
     if (stations.count(id)) {
-        int oldActive = stations[id].getActiveWorkshop();
         editCsData(stations[id]);
         int newActive = stations[id].getActiveWorkshop();
 
@@ -753,7 +751,7 @@ void PipelineSystem::viewAllObjectsForReplay() {
         cout << "No pipes available." << endl;
     }
     else {
-        cout << "=== PIPES ===" << endl;
+        cout << "Pipes" << endl;
         for (const auto& pipe_pair : pipes) {
             cout << "ID: " << pipe_pair.second.getId()
                 << " - " << pipe_pair.second.getName()
@@ -765,7 +763,7 @@ void PipelineSystem::viewAllObjectsForReplay() {
         cout << "No compressor stations available." << endl;
     }
     else {
-        cout << "=== COMPRESSOR STATIONS ===" << endl;
+        cout << "Compressor stations" << endl;
         for (const auto& cs_pair : stations) {
             float unusedPercent = cs_pair.second.getUnusedPercentage();
             cout << "ID: " << cs_pair.second.getId()

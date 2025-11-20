@@ -24,7 +24,6 @@ public:
     void logDeletePipe(int id);
     void logDeleteCS(int id);
 
-    void logBatchEdit(const unordered_set<int>& pipeIds, bool newStatus);
     void logBatchEdit(const unordered_map<int, bool>& pipeStatuses);
 
     void logSaveToFile(const string& filename);
@@ -37,6 +36,5 @@ public:
     void logSearchCSByUnusedPercentage(float minPercent, float maxPercent);
 
     void logReplayFromFile(const string& filename);
-    void logMessage(const string& message);
     void logMenuAction(const string& action);
 };

@@ -70,7 +70,7 @@ int main() {
         case 11: {
             system.logMenuAction("SAVE_DATA_TO_FILE");
             string filename;
-            cout << "Enter filename to save DATA: ";
+            cout << "Enter filename to save data: ";
             getline(cin >> ws, filename);
             system.saveToFile(filename);
             break;
@@ -78,7 +78,7 @@ int main() {
         case 12: {
             system.logMenuAction("LOAD_DATA_FROM_FILE");
             string filename;
-            cout << "Enter filename to load DATA: ";
+            cout << "Enter filename to load data: ";
             getline(cin >> ws, filename);
             system.loadFromFile(filename);
             break;
