@@ -1,40 +1,60 @@
 #pragma once
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include "pipe.h"
-#include "cs.h"
-using namespace std;
+#include <fstream>
 
-class ActionLogger {
-private:
-    ofstream logFile;
-    string filename;
+static bool REPLAY_MODE = false;
 
+#define INPUT_LINE(in, str) \
+    if (!REPLAY_MODE) { \
+        getline(in >> std::ws, str); \
+        std::cerr << str << std::endl; \
+    } else { \
+        getline(in >> std::ws, str); \
+    }
+
+template <typename T>
+T GetCorrectNumber(T min, T max)
+{
+    T x;
+    while ((std::cin >> x).fail()      
+        || std::cin.peek() != '\n'   
+        || x < min || x > max)        
+    {
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        if (!REPLAY_MODE) {  
+            std::cout << "Type number (" << min << "-" << max << "): ";
+        }
+    }
+    std::cin.ignore(10000, '\n');  
+    if (!REPLAY_MODE) {  
+        std::cerr << x << std::endl;
+    }
+    return x;
+}
+
+inline bool GetCorrectBool() {
+    int x = GetCorrectNumber<int>(0, 1);
+    return static_cast<bool>(x);
+}
+
+class redirect_output_wrapper
+{
+    std::ostream& stream;
+    std::streambuf* const old_buf;
 public:
-    ActionLogger(const string& logFilename = "actions.log");
-    ~ActionLogger();
+    redirect_output_wrapper(std::ostream& src)
+        : old_buf(src.rdbuf()), stream(src)
+    {
+    }
 
-    void logAddPipe(const Pipe& pipe);
-    void logAddCS(const CS& cs);
-    void logEditPipe(int id, bool newStatus);
-    void logEditCS(int id, int newActive);
-    void logDeletePipe(int id);
-    void logDeleteCS(int id);
+    ~redirect_output_wrapper() {
+        stream.rdbuf(old_buf);
+    }
 
-    void logBatchEdit(const unordered_map<int, bool>& pipeStatuses);
-
-    void logSaveToFile(const string& filename);
-    void logLoadFromFile(const string& filename);
-
-    void logViewAllObjects();
-    void logSearchPipesByName(const string& name);
-    void logSearchPipesByStatus(bool status);
-    void logSearchCSByName(const string& name);
-    void logSearchCSByUnusedPercentage(float minPercent, float maxPercent);
-
-    void logReplayFromFile(const string& filename);
-    void logMenuAction(const string& action);
+    void redirect(std::ostream& dest)
+    {
+        stream.rdbuf(dest.rdbuf());
+    }
 };

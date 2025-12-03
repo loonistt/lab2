@@ -1,5 +1,5 @@
 #include "pipe.h"
-#include "checkshow.h"
+#include "logger.h" 
 #include <iostream>
 #include <stdexcept>
 using namespace std;
@@ -37,51 +37,34 @@ ostream& operator<<(ostream& out, const Pipe& pipe) {
 
 void addPipeData(Pipe& pipe) {
     cout << "Enter name of the pipe: ";
-    getline(cin >> ws, pipe.name);
+    INPUT_LINE(cin, pipe.name);
 
-    while (true) {
-        cout << "Enter pipe length (in meters): ";
-        float len;
-        cin >> len;
-        if (checkCinError()) continue;
-
-        try {
-            pipe.setLength(len);
-            break;
-        }
-        catch (const invalid_argument& e) {
-            cout << e.what() << endl;
-        }
+    cout << "Enter pipe length (in meters, 0-50): ";
+    float len = GetCorrectNumber<float>(0, 50);  
+    try {
+        pipe.setLength(len);
+    }
+    catch (const invalid_argument& e) {
+        cout << "ERROR: " << e.what() << endl;
+        throw;
     }
 
-    while (true) {
-        cout << "Enter pipe diameter (in millimeters): ";
-        float diam;
-        cin >> diam;
-        if (checkCinError()) continue;
-
-        try {
-            pipe.setDiameter(diam);
-            break;
-        }
-        catch (const invalid_argument& e) {
-            cout << e.what() << endl;
-        }
+    cout << "Enter pipe diameter (in millimeters, 0-2500): ";
+    float diam = GetCorrectNumber<float>(0, 2500); 
+    try {
+        pipe.setDiameter(diam);
+    }
+    catch (const invalid_argument& e) {
+        cout << "ERROR: " << e.what() << endl;
+        throw;
     }
 
-    while (true) {
-        cout << "Choose pipe status (0 - in repair, 1 - working): ";
-        cin >> pipe.fixing;
-        if (checkCinError()) continue;
-        break;
-    }
+    cout << "Choose pipe status (0 - in repair, 1 - working): ";
+    pipe.fixing = GetCorrectBool(); 
 }
 
 void editPipeData(Pipe& pipe) {
-    while (true) {
-        cout << "Enter new pipe status (0 - in repair, 1 - working): ";
-        cin >> pipe.fixing;
-        if (checkCinError()) continue;
-        break;
-    }
+    cout << "Enter new pipe status (0 - in repair, 1 - working): ";
+    bool newStatus = GetCorrectBool();
+    pipe.setFixing(newStatus);
 }

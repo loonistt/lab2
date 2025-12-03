@@ -1,7 +1,6 @@
 #pragma once
 #include "pipe.h"
 #include "cs.h"
-#include "logger.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -15,15 +14,9 @@ private:
     unordered_map<int, CS> stations;
     int nextPipeId = 1;
     int nextCsId = 1;
-    ActionLogger logger;
-
-    void loadFromFileForReplay(const string& filename);
-    void viewAllObjectsForReplay();
 
 public:
-    void logMenuAction(const string& action) {
-        logger.logMenuAction(action);
-    }
+    PipelineSystem() {}  
 
     void addPipe();
     void addCS();
@@ -44,8 +37,6 @@ public:
 
     void saveToFile(const string& filename);
     void loadFromFile(const string& filename);
-
-    void replayFromFile(const string& filename);
 
     void clearAllData();
 };

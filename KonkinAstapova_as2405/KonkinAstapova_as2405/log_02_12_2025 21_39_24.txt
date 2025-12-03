@@ -1,0 +1,39 @@
+=== PIPELINE SYSTEM SESSION STARTED ===
+Log file: log_02_12_2025 21_39_24.txt
+========================================
+
+PipelineSystem initialized
+
+--- Menu displayed ---
+INPUT: 1
+User selected action: 1
+>>> ACTION: Add pipe
+=== Starting addPipe operation ===
+Created pipe with ID: 1
+=== Adding pipe data ===
+INPUT: lop
+INPUT: 3
+INPUT: 4
+INPUT: 0
+=== Pipe data added successfully ===
+Pipe added to system. Total pipes: 1
+=== addPipe completed ===
+
+--- Action 1 completed ---
+
+--- Menu displayed ---
+INPUT: 3
+User selected action: 3
+>>> ACTION: View all objects
+=== Viewing all objects ===
+Displaying 1 pipes
+No compressor stations available.
+=== View completed ===
+
+--- Action 3 completed ---
+
+--- Menu displayed ---
+INPUT: 0
+User selected action: 0
+>>> ACTION: Exit program
+=== SESSION ENDED ===

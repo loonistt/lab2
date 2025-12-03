@@ -30,9 +30,6 @@
     <ClCompile Include="pipecsfunctions.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="logger.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pipe.h">

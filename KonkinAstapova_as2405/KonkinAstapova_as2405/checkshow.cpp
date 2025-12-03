@@ -17,8 +17,6 @@ void showMenu() {
     cout << "10. Batch edit pipes\n";
     cout << "11. Save to file\n";
     cout << "12. Load from file\n";
-    cout << "13. Save actions to file\n";
-    cout << "14. Replay actions from file\n";
     cout << "0. Exit\n\n";
     cout << "Please select an action: ";
 }

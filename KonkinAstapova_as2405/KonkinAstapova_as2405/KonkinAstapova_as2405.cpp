@@ -1,113 +1,131 @@
 ﻿#include "pipecsfunctions.h"
 #include "checkshow.h"
+#include "logger.h"
 #include <iostream>
-using namespace std;
+#include <fstream>
+#include <chrono>
+#include <format>
 
-int main() {
+using namespace std;
+using namespace std::chrono;
+
+int main(int argc, char* argv[])
+{
+    ifstream input_file;
+    streambuf* original_cin = nullptr;
+    ofstream logfile;
+    redirect_output_wrapper cerr_out(cerr);
+
+    if (argc > 1) {
+        REPLAY_MODE = true;
+        input_file.open(argv[1]);
+        if (!input_file.is_open()) {
+            cerr << "Error: Cannot open log file: " << argv[1] << endl;
+            return 1;
+        }
+        original_cin = cin.rdbuf();
+        cin.rdbuf(input_file.rdbuf());
+    }
+    else {
+        REPLAY_MODE = false;
+        string time = std::format("{:%d_%m_%Y_%H_%M_%OS}", system_clock::now());
+        string log_filename = "log_" + time + ".txt";
+
+        logfile.open(log_filename);
+        if (logfile.is_open()) {
+            cerr_out.redirect(logfile);
+        }
+    }
+
     PipelineSystem system;
 
     while (true) {
         showMenu();
+
         int action;
-        cin >> action;
+        cout << "Select action (0-12): ";
+        action = GetCorrectNumber<int>(0, 12);
 
-        if (cin.fail() || action < 0 || action > 14) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Error, incorrect value.\n\n";
-            continue;
-        }
+        try {
+            switch (action) {
+            case 0:
+                cout << "Exiting program..." << endl;
+                if (original_cin) {
+                    cin.rdbuf(original_cin);
+                }
+                return 0;
 
-        switch (action) {
-        case 0:
-            system.logMenuAction("EXIT");
-            return 0;
-        case 1:
-            system.logMenuAction("ADD_PIPE");
-            system.addPipe();
-            break;
-        case 2:
-            system.logMenuAction("ADD_CS");
-            system.addCS();
-            break;
-        case 3:
-            system.logMenuAction("VIEW_ALL_OBJECTS");
-            system.viewAllObjects();
-            break;
-        case 4:
-            system.logMenuAction("EDIT_PIPE");
-            system.editPipe();
-            break;
-        case 5:
-            system.logMenuAction("EDIT_CS");
-            system.editCS();
-            break;
-        case 6:
-            system.logMenuAction("DELETE_PIPE");
-            system.deletePipe();
-            break;
-        case 7:
-            system.logMenuAction("DELETE_CS");
-            system.deleteCS();
-            break;
-        case 8:
-            system.logMenuAction("SEARCH_PIPES_MENU");
-            system.searchPipesMenu();
-            break;
-        case 9:
-            system.logMenuAction("SEARCH_CS_MENU");
-            system.searchCSMenu();
-            break;
-        case 10: {
-            system.logMenuAction("BATCH_EDIT_PIPES");
-            string name;
-            cout << "Enter pipe name for batch editing: ";
-            getline(cin >> ws, name);
-            unordered_set<int> results = system.findPipesByName(name);
-            system.batchEditPipes(results);
-            break;
-        }
-        case 11: {
-            system.logMenuAction("SAVE_DATA_TO_FILE");
-            string filename;
-            cout << "Enter filename to save data: ";
-            getline(cin >> ws, filename);
-            system.saveToFile(filename);
-            break;
-        }
-        case 12: {
-            system.logMenuAction("LOAD_DATA_FROM_FILE");
-            string filename;
-            cout << "Enter filename to load data: ";
-            getline(cin >> ws, filename);
-            system.loadFromFile(filename);
-            break;
-        }
-        case 13: {
-            system.logMenuAction("SAVE_ACTIONS_TO_FILE");
-            string filename;
-            cout << "Enter filename to save actions: ";
-            getline(cin >> ws, filename);
+            case 1:
+                system.addPipe();
+                break;
 
-            ifstream source("actions.log");
-            ofstream dest(filename);
-            if (source && dest) {
-                dest << source.rdbuf();
-                cout << "Actions saved to " << filename << " successfully!\n\n";
+            case 2:
+                system.addCS();
+                break;
+
+            case 3:
+                system.viewAllObjects();
+                break;
+
+            case 4:
+                system.editPipe();
+                break;
+
+            case 5:
+                system.editCS();
+                break;
+
+            case 6:
+                system.deletePipe();
+                break;
+
+            case 7:
+                system.deleteCS();
+                break;
+
+            case 8:
+                system.searchPipesMenu();
+                break;
+
+            case 9:
+                system.searchCSMenu();
+                break;
+
+            case 10: {
+                string name;
+                cout << "Enter pipe name for batch editing: ";
+                INPUT_LINE(cin, name);
+                unordered_set<int> results = system.findPipesByName(name);
+                system.batchEditPipes(results);
+                break;
             }
-            else {
-                cout << "Error saving actions to file.\n\n";
+
+            case 11: {
+                string filename;
+                cout << "Enter filename to save DATA: ";
+                INPUT_LINE(cin, filename);
+                system.saveToFile(filename);
+                break;
             }
-            break;
+
+            case 12: {
+                string filename;
+                cout << "Enter filename to load DATA: ";
+                INPUT_LINE(cin, filename);
+                system.loadFromFile(filename);
+                break;
+            }
+
+            default:
+                cout << "Invalid action. Please try again.\n\n";
+                break;
+            }
         }
-        case 14: {
-            system.logMenuAction("REPLAY_FROM_FILE");
-            string filename;
-            cout << "Enter actions filename to replay: ";
-            getline(cin >> ws, filename);
-            system.replayFromFile(filename);
-            break;
+        catch (const exception& e) {
+            cout << "Error: " << e.what() << "\n\n";
         }
+        catch (...) {
+            cout << "Unknown error occurred.\n\n";
         }
     }
 

@@ -1,5 +1,5 @@
 #include "cs.h"
-#include "checkshow.h"
+#include "logger.h"
 #include <iostream>
 #include <stdexcept>
 using namespace std;
@@ -54,67 +54,48 @@ ostream& operator<<(ostream& out, const CS& cs) {
 
 void addCsData(CS& cs) {
     cout << "Enter name of the compressor station: ";
-    getline(cin >> ws, cs.name);
+    INPUT_LINE(cin, cs.name);
 
-    while (true) {
-        cout << "Enter the number of workshops: ";
-        int workshops;
-        cin >> workshops;
-        if (checkCinError()) continue;
-
-        try {
-            cs.setWorkshop(workshops);
-            break;
-        }
-        catch (const invalid_argument& e) {
-            cout << e.what() << endl;
-        }
+    cout << "Enter the number of workshops (1-50): ";
+    int workshops = GetCorrectNumber<int>(1, 50); 
+    try {
+        cs.setWorkshop(workshops);
+    }
+    catch (const invalid_argument& e) {
+        cout << "ERROR: " << e.what() << endl;
+        throw;
     }
 
-    while (true) {
-        cout << "Enter the number of active workshops: ";
-        int active;
-        cin >> active;
-        if (checkCinError()) continue;
-
-        try {
-            cs.setActiveWorkshop(active);
-            break;
-        }
-        catch (const invalid_argument& e) {
-            cout << e.what() << endl;
-        }
+    cout << "Enter the number of active workshops (0-" << workshops << "): ";
+    int active = GetCorrectNumber<int>(0, workshops);
+    try {
+        cs.setActiveWorkshop(active);
+    }
+    catch (const invalid_argument& e) {
+        cout << "ERROR: " << e.what() << endl;
+        throw;
     }
 
-    while (true) {
-        cout << "Enter the compressor station score (0-10): ";
-        float score_val;
-        cin >> score_val;
-        if (checkCinError()) continue;
-
-        try {
-            cs.setScore(score_val);
-            break;
-        }
-        catch (const invalid_argument& e) {
-            cout << e.what() << endl;
-        }
+    cout << "Enter the compressor station score (0-10): ";
+    float score_val = GetCorrectNumber<float>(0, 10);
+    try {
+        cs.setScore(score_val);
+    }
+    catch (const invalid_argument& e) {
+        cout << "ERROR: " << e.what() << endl;
+        throw;
     }
 }
 
 void editCsData(CS& cs) {
-    while (true) {
-        cout << "Enter new value of active workshops: ";
-        int active;
-        cin >> active;
-        if (checkCinError()) continue;
+    cout << "Enter new value of active workshops (0-" << cs.getWorkshop() << "): ";
+    int active = GetCorrectNumber<int>(0, cs.getWorkshop());
 
-        try {
-            cs.setActiveWorkshop(active);
-            break;
-        }
-        catch (const invalid_argument& e) {
-            cout << e.what() << endl;
-        }
+    try {
+        cs.setActiveWorkshop(active);
+    }
+    catch (const invalid_argument& e) {
+        cout << "ERROR: " << e.what() << endl;
+        throw;
     }
 }
