@@ -1,12 +1,10 @@
 #include "pipe.h"
-#include "logger.h" 
+#include "logger.h"
 #include <iostream>
 #include <stdexcept>
 using namespace std;
 
-Pipe::Pipe() : id(0), length(0), diameter(0), fixing(false) {}
-
-Pipe::Pipe(int new_id) : id(new_id), length(0), diameter(0), fixing(false) {}
+Pipe::Pipe() : id(nextId++), length(0), diameter(0), fixing(false) {}
 
 void Pipe::setLength(float new_length) {
     if (new_length > 0 && new_length <= 50) {
@@ -27,44 +25,44 @@ void Pipe::setDiameter(float new_diameter) {
 }
 
 ostream& operator<<(ostream& out, const Pipe& pipe) {
-    out << "Pipe ID: " << pipe.getId() << "\n"
-        << "Name: " << pipe.getName() << "\n"
-        << "Length: " << pipe.getLength() << "m\n"
-        << "Diameter: " << pipe.getDiameter() << "mm\n"
-        << "Status: " << (pipe.getFixing() ? "Working" : "In repair") << "\n\n";
+    out << "Pipe ID: " << pipe.id << "\n"
+        << "Name: " << pipe.name << "\n"
+        << "Length: " << pipe.length << "m\n"
+        << "Diameter: " << pipe.diameter << "mm\n"
+        << "Status: " << (pipe.fixing ? "Working" : "In repair") << "\n\n";
     return out;
 }
 
-void addPipeData(Pipe& pipe) {
+istream& operator>>(istream& in, Pipe& pipe) {
     cout << "Enter name of the pipe: ";
-    INPUT_LINE(cin, pipe.name);
+    INPUT_LINE(in, pipe.name);
 
     cout << "Enter pipe length (in meters, 0-50): ";
-    float len = GetCorrectNumber<float>(0, 50);  
-    try {
-        pipe.setLength(len);
+    float len = GetCorrectNumber<float>(0, 50);
+    if (len > 0 && len <= 50) {
+        pipe.length = len;
     }
-    catch (const invalid_argument& e) {
-        cout << "ERROR: " << e.what() << endl;
-        throw;
+    else {
+        throw invalid_argument("Length must be between 0 and 50 meters");
     }
 
     cout << "Enter pipe diameter (in millimeters, 0-2500): ";
-    float diam = GetCorrectNumber<float>(0, 2500); 
-    try {
-        pipe.setDiameter(diam);
+    float diam = GetCorrectNumber<float>(0, 2500);
+    if (diam > 0 && diam <= 2500) {
+        pipe.diameter = diam;
     }
-    catch (const invalid_argument& e) {
-        cout << "ERROR: " << e.what() << endl;
-        throw;
+    else {
+        throw invalid_argument("Diameter must be between 0 and 2500 millimeters");
     }
 
     cout << "Choose pipe status (0 - in repair, 1 - working): ";
-    pipe.fixing = GetCorrectBool(); 
+    pipe.fixing = GetCorrectBool();
+
+    return in;
 }
 
-void editPipeData(Pipe& pipe) {
+void Pipe::editPipe() {
     cout << "Enter new pipe status (0 - in repair, 1 - working): ";
     bool newStatus = GetCorrectBool();
-    pipe.setFixing(newStatus);
+    fixing = newStatus;  
 }

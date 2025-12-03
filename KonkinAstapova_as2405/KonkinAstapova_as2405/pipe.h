@@ -5,6 +5,7 @@ using namespace std;
 
 class Pipe {
 private:
+    static int nextId;
     int id;
     string name;
     float length;
@@ -13,7 +14,6 @@ private:
 
 public:
     Pipe();
-    Pipe(int new_id);
 
     int getId() const { return id; }
     string getName() const { return name; }
@@ -26,11 +26,9 @@ public:
     void setDiameter(float new_diameter);
     void setFixing(bool new_fixing) { fixing = new_fixing; }
 
-    friend void addPipeData(Pipe& pipe);
-    friend void editPipeData(Pipe& pipe);
     friend ostream& operator<<(ostream& out, const Pipe& pipe);
+    friend istream& operator>>(istream& in, Pipe& pipe);
+    void editPipe();
 };
 
-void addPipeData(Pipe& pipe);
-void editPipeData(Pipe& pipe);
-ostream& operator<<(ostream& out, const Pipe& pipe);
+int Pipe::nextId = 1;

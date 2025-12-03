@@ -124,9 +124,6 @@ int main(int argc, char* argv[])
         catch (const exception& e) {
             cout << "Error: " << e.what() << "\n\n";
         }
-        catch (...) {
-            cout << "Unknown error occurred.\n\n";
-        }
     }
 
     return 0;

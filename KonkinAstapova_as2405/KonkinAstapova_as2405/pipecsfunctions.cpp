@@ -8,31 +8,17 @@ using namespace std;
 
 
 void PipelineSystem::addPipe() {
-    Pipe pipe(nextPipeId++);
+    Pipe pipe;
 
-    try {
-        addPipeData(pipe);
-    }
-    catch (const exception& e) {
-        nextPipeId--;
-        throw;
-    }
+    cin >> pipe;
 
     pipes.emplace(pipe.getId(), pipe);
     cout << "New pipe added successfully! ID: " << pipe.getId() << "\n\n";
 }
 
 void PipelineSystem::addCS() {
-    CS cs(nextCsId++);
-
-    try {
-        addCsData(cs);
-    }
-    catch (const exception& e) {
-        nextCsId--;
-        throw;
-    }
-
+    CS cs;
+    cin >> cs;
     stations.emplace(cs.getId(), cs);
     cout << "New compressor station added successfully! ID: " << cs.getId() << "\n\n";
 }
@@ -65,7 +51,7 @@ void PipelineSystem::editPipe() {
     id = GetCorrectNumber<int>(0, INT_MAX);
 
     if (pipes.count(id)) {
-        editPipeData(pipes[id]);
+        pipes[id].editPipe();
         cout << "Pipe edited successfully!\n\n";
     }
     else {
@@ -79,7 +65,7 @@ void PipelineSystem::editCS() {
     id = GetCorrectNumber<int>(0, INT_MAX);
 
     if (stations.count(id)) {
-        editCsData(stations[id]);
+        stations[id].editCS();
         cout << "Compressor station edited successfully!\n\n";
     }
     else {
@@ -334,7 +320,7 @@ void PipelineSystem::loadFromFile(const string& filename) {
         for (int i = 0; i < pipeCount; i++) {
             int id;
             file >> id;
-            Pipe pipe(id);
+            Pipe pipe;
 
             string name;
             getline(file >> ws, name);
@@ -348,7 +334,6 @@ void PipelineSystem::loadFromFile(const string& filename) {
             pipe.setFixing(fixing);
 
             pipes.emplace(id, pipe);
-            nextPipeId = max(nextPipeId, id + 1);
         }
 
         int csCount;
@@ -356,7 +341,7 @@ void PipelineSystem::loadFromFile(const string& filename) {
         for (int i = 0; i < csCount; i++) {
             int id;
             file >> id;
-            CS cs(id);
+            CS cs;
 
             string name;
             getline(file >> ws, name);
@@ -370,7 +355,6 @@ void PipelineSystem::loadFromFile(const string& filename) {
             cs.setScore(score);
 
             stations.emplace(id, cs);
-            nextCsId = max(nextCsId, id + 1);
         }
 
         file.close();
@@ -384,6 +368,4 @@ void PipelineSystem::loadFromFile(const string& filename) {
 void PipelineSystem::clearAllData() {
     pipes.clear();
     stations.clear();
-    nextPipeId = 1;
-    nextCsId = 1;
 }

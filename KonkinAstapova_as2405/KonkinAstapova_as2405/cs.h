@@ -5,6 +5,7 @@ using namespace std;
 
 class CS {
 private:
+    static int nextId;
     int id;
     string name;
     int workshop;
@@ -13,7 +14,6 @@ private:
 
 public:
     CS();
-    CS(int new_id);
 
     int getId() const { return id; }
     string getName() const { return name; }
@@ -26,13 +26,12 @@ public:
     void setActiveWorkshop(int new_active);
     void setScore(float new_score);
 
+
     float getUnusedPercentage() const;
 
-    friend void addCsData(CS& cs);
-    friend void editCsData(CS& cs);
     friend ostream& operator<<(ostream& out, const CS& cs);
+    friend istream& operator>>(istream& in, CS& cs);
+    void editCS();
 };
 
-void addCsData(CS& cs);
-void editCsData(CS& cs);
-ostream& operator<<(ostream& out, const CS& cs);
+int CS::nextId = 1;

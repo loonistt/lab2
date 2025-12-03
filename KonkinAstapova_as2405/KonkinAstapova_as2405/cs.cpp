@@ -4,9 +4,7 @@
 #include <stdexcept>
 using namespace std;
 
-CS::CS() : id(0), workshop(0), ActiveWorkshop(0), score(0) {}
-
-CS::CS(int new_id) : id(new_id), workshop(0), ActiveWorkshop(0), score(0) {}
+CS::CS() : id(nextId++), workshop(0), ActiveWorkshop(0), score(0) {}
 
 void CS::setWorkshop(int new_workshop) {
     if (new_workshop > 0 && new_workshop <= 50) {
@@ -44,58 +42,59 @@ float CS::getUnusedPercentage() const {
 }
 
 ostream& operator<<(ostream& out, const CS& cs) {
-    out << "CS ID: " << cs.getId() << "\n"
-        << "Name: " << cs.getName() << "\n"
-        << "Workshops: " << cs.getWorkshop() << " (active: " << cs.getActiveWorkshop() << ")\n"
+    out << "CS ID: " << cs.id << "\n"
+        << "Name: " << cs.name << "\n"
+        << "Workshops: " << cs.workshop << " (active: " << cs.ActiveWorkshop << ")\n"
         << "Unused workshops: " << cs.getUnusedPercentage() << "%\n"
-        << "Score: " << cs.getScore() << "\n\n";
+        << "Score: " << cs.score << "\n\n";
     return out;
 }
 
-void addCsData(CS& cs) {
+istream& operator>>(istream& in, CS& cs) {
     cout << "Enter name of the compressor station: ";
-    INPUT_LINE(cin, cs.name);
+    INPUT_LINE(in, cs.name);
 
     cout << "Enter the number of workshops (1-50): ";
-    int workshops = GetCorrectNumber<int>(1, 50); 
-    try {
-        cs.setWorkshop(workshops);
+    int workshops = GetCorrectNumber<int>(1, 50);
+    if (workshops > 0 && workshops <= 50) {
+        cs.workshop = workshops;
+        if (cs.ActiveWorkshop > cs.workshop) {
+            cs.ActiveWorkshop = cs.workshop;
+        }
     }
-    catch (const invalid_argument& e) {
-        cout << "ERROR: " << e.what() << endl;
-        throw;
+    else {
+        throw invalid_argument("Number of workshops must be between 1 and 50");
     }
 
     cout << "Enter the number of active workshops (0-" << workshops << "): ";
     int active = GetCorrectNumber<int>(0, workshops);
-    try {
-        cs.setActiveWorkshop(active);
+    if (active >= 0 && active <= cs.workshop) {
+        cs.ActiveWorkshop = active;
     }
-    catch (const invalid_argument& e) {
-        cout << "ERROR: " << e.what() << endl;
-        throw;
+    else {
+        throw invalid_argument("Active workshops must be between 0 and " + to_string(cs.workshop));
     }
 
     cout << "Enter the compressor station score (0-10): ";
     float score_val = GetCorrectNumber<float>(0, 10);
-    try {
-        cs.setScore(score_val);
+    if (score_val >= 0 && score_val <= 10) {
+        cs.score = score_val;
     }
-    catch (const invalid_argument& e) {
-        cout << "ERROR: " << e.what() << endl;
-        throw;
+    else {
+        throw invalid_argument("Score must be between 0 and 10");
     }
+
+    return in;
 }
 
-void editCsData(CS& cs) {
-    cout << "Enter new value of active workshops (0-" << cs.getWorkshop() << "): ";
-    int active = GetCorrectNumber<int>(0, cs.getWorkshop());
+void CS::editCS() {
+    cout << "Enter new value of active workshops (0-" << workshop << "): ";
+    int active = GetCorrectNumber<int>(0, workshop);
 
-    try {
-        cs.setActiveWorkshop(active);
+    if (active >= 0 && active <= workshop) {
+        ActiveWorkshop = active;
     }
-    catch (const invalid_argument& e) {
-        cout << "ERROR: " << e.what() << endl;
-        throw;
+    else {
+        throw invalid_argument("Active workshops must be between 0 and " + to_string(workshop));
     }
 }

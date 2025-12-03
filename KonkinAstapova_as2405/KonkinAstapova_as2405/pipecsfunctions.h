@@ -12,8 +12,6 @@ class PipelineSystem {
 private:
     unordered_map<int, Pipe> pipes;
     unordered_map<int, CS> stations;
-    int nextPipeId = 1;
-    int nextCsId = 1;
 
 public:
     PipelineSystem() {}  
@@ -25,7 +23,6 @@ public:
     void editCS();
     void deletePipe();
     void deleteCS();
-
     void searchPipesMenu();
     void searchCSMenu();
     unordered_set<int> findPipesByName(const string& name);
@@ -34,7 +31,6 @@ public:
     unordered_set<int> findCSByUnusedPercentage(float minPercent, float maxPercent);
 
     void batchEditPipes(const unordered_set<int>& pipeIds);
-
     void saveToFile(const string& filename);
     void loadFromFile(const string& filename);
 
